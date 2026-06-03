@@ -1239,13 +1239,16 @@
     const color = document.getElementById('qrColor').value;
     const bgColor = document.getElementById('qrBgColor').value;
     const preview = document.getElementById('qrPreview');
+    if (preview) preview.style.background = bgColor;
     preview.innerHTML = '';
     const canvas = document.createElement('canvas');
     preview.appendChild(canvas);
     if (typeof QRCode !== 'undefined') {
-      QRCode.toCanvas(canvas, url, { width: 250, margin: 2, color: { dark: color, light: bgColor }, errorCorrectionLevel: 'H' }, (err) => {
-        if (err) showToast('QR hatası!', 'error');
-        else document.getElementById('downloadQrBtn').classList.remove('hidden');
+      QRCode.toCanvas(canvas, url, { width: 350, margin: 4, color: { dark: color, light: bgColor }, errorCorrectionLevel: 'H' }, (err) => {
+        if (err) {
+          console.error(err);
+          showToast('QR hatası!', 'error');
+        }
       });
     }
   }
