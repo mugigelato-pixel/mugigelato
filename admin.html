@@ -415,8 +415,8 @@
         </div>
         <div class="qr-container">
           <div class="form-group">
-            <label class="form-label">Menü URL</label>
-            <input type="url" id="qrUrl" placeholder="https://mugigelato.com">
+            <label class="form-label">Menü Adresi</label>
+            <div class="qr-url-display glass-card" id="qrUrlDisplay" style="padding:var(--space-3);font-size:var(--text-sm);word-break:break-all;color:var(--accent-green)"></div>
           </div>
           <div class="qr-options">
             <div class="color-input-group">
@@ -428,9 +428,9 @@
               <input type="color" id="qrBgColor" value="#0B0B14">
             </div>
           </div>
-          <button class="btn btn-primary mb-4" id="generateQrBtn">🔲 QR Kod Oluştur</button>
+          <button class="btn btn-primary mb-4" id="generateQrBtn">🔲 QR Kod Yenile</button>
           <div class="qr-preview glass-card-strong" id="qrPreview">
-            <p class="text-muted">URL girin ve QR oluşturun</p>
+            <p class="text-muted">Yükleniyor...</p>
           </div>
           <button class="btn btn-secondary hidden" id="downloadQrBtn">📥 QR Kodu İndir</button>
         </div>
@@ -453,6 +453,7 @@
   <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-client.js"></script>
   <script src="js/store.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/i18n.js"></script>

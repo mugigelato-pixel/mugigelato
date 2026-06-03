@@ -33,6 +33,10 @@
   async function init() {
     Store.init();
     await ImageStorage.init();
+    // Load latest from cloud
+    if (typeof SupabaseDB !== 'undefined') {
+      await Store.initAsync();
+    }
     checkAuth();
     bindGlobalEvents();
   }
@@ -1222,9 +1226,16 @@
   // ══════════════════════════════════════
   //  QR CODE
   // ══════════════════════════════════════
+  function getMenuUrl() {
+    const loc = window.location;
+    return `${loc.protocol}//${loc.host}/menu.html`;
+  }
+
   function generateQR() {
-    const url = document.getElementById('qrUrl').value.trim();
-    if (!url) { showToast('URL girin.', 'error'); return; }
+    const url = getMenuUrl();
+    const urlDisplay = document.getElementById('qrUrlDisplay');
+    if (urlDisplay) urlDisplay.textContent = url;
+
     const color = document.getElementById('qrColor').value;
     const bgColor = document.getElementById('qrBgColor').value;
     const preview = document.getElementById('qrPreview');
@@ -1253,7 +1264,10 @@
     logoutBtn.addEventListener('click', handleLogout);
 
     document.querySelectorAll('.nav-item[data-section]').forEach(item => {
-      item.addEventListener('click', () => switchSection(item.dataset.section));
+      item.addEventListener('click', () => {
+        switchSection(item.dataset.section);
+        if (item.dataset.section === 'qr') generateQR();
+      });
     });
 
     sidebarToggle.addEventListener('click', () => { adminSidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); });

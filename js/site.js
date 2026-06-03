@@ -16,6 +16,14 @@
     setupRouting();
     setupMobileMenu();
     handleRoute();
+
+    // Sync from cloud and re-render if newer data exists
+    if (typeof SupabaseDB !== 'undefined') {
+      const cloudData = await Store.initAsync();
+      if (cloudData) {
+        await loadContent();
+      }
+    }
   }
 
   // ── Resolve image URL (handles local:// refs) ──

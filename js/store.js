@@ -1,5 +1,6 @@
 /* ============================================
-   MUGI GELATO — Data Store (localStorage)
+   MUGI GELATO — Data Store
+   localStorage (cache) + Supabase (cloud sync)
    ============================================ */
 
 const STORE_KEY = 'mugi_gelato_data';
@@ -16,19 +17,14 @@ const DEFAULT_DATA = {
     defaultLang: 'tr',
     adminPassword: 'mugi2024',
     currency: '₺',
-    mapEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3008.913627728508!2d28.99950307681983!3d41.04901787134476!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab70b006b12d3%3A0x393bb7ec69d6e7ad!2sMugi%20Gelato!5e0!3m2!1str!2str!4v1758386156396!5m2!1str!2str',
-    // Supabase (doldurulunca otomatik bağlanır)
-    supabaseUrl: '',
-    supabaseAnonKey: '',
-    supabaseBucket: 'images'
+    mapEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3008.913627728508!2d28.99950307681983!3d41.04901787134476!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab70b006b12d3%3A0x393bb7ec69d6e7ad!2sMugi%20Gelato!5e0!3m2!1str!2str!4v1758386156396!5m2!1str!2str'
   },
 
   // ── Website Content ──
   website: {
     heroTitle: "Mugi Gelato'ya Hoş geldin!",
-    // Menu Hero Background
     menuHero: {
-      bgType: 'gradient',   // 'gradient' | 'image' | 'video'
+      bgType: 'gradient',
       bgImage: '',
       bgVideo: '',
       overlayOpacity: 0.6
@@ -199,6 +195,7 @@ function generateId(prefix = 'id') {
   return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
 }
 
+// ── Local Storage (cache) ──
 function getData() {
   try {
     const raw = localStorage.getItem(STORE_KEY);
@@ -209,6 +206,48 @@ function getData() {
 
 function saveData(data) {
   localStorage.setItem(STORE_KEY, JSON.stringify(data));
+  // Fire-and-forget cloud sync
+  syncToCloud(data);
+}
+
+// ── Supabase Cloud Sync ──
+let _syncTimer = null;
+function syncToCloud(data) {
+  if (typeof SupabaseDB === 'undefined') return;
+  // Debounce: wait 500ms to batch rapid saves
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(async () => {
+    try {
+      await Promise.all([
+        SupabaseDB.save('settings', data.settings),
+        SupabaseDB.save('website', data.website),
+        SupabaseDB.save('categories', data.categories),
+        SupabaseDB.save('products', data.products),
+        SupabaseDB.save('recipes', data.recipes || [])
+      ]);
+      console.log('☁️ Cloud sync complete');
+    } catch (e) {
+      console.warn('☁️ Cloud sync error:', e);
+    }
+  }, 500);
+}
+
+async function loadFromCloud() {
+  if (typeof SupabaseDB === 'undefined') return null;
+  try {
+    const cloudData = await SupabaseDB.loadAll();
+    if (!cloudData || Object.keys(cloudData).length === 0) return null;
+    return {
+      settings: cloudData.settings || DEFAULT_DATA.settings,
+      website: cloudData.website || DEFAULT_DATA.website,
+      categories: cloudData.categories || DEFAULT_DATA.categories,
+      products: cloudData.products || DEFAULT_DATA.products,
+      recipes: cloudData.recipes || []
+    };
+  } catch (e) {
+    console.warn('Cloud load error:', e);
+    return null;
+  }
 }
 
 function initStore(forceReset = false) {
@@ -221,12 +260,36 @@ function initStore(forceReset = false) {
   merged.settings = { ...DEFAULT_DATA.settings, ...existing.settings };
   if (!merged.recipes) merged.recipes = [];
   if (!merged.website) merged.website = DEFAULT_DATA.website;
+  // Ensure menuHero exists
+  if (!merged.website.menuHero) merged.website.menuHero = DEFAULT_DATA.website.menuHero;
   saveData(merged);
   return merged;
 }
 
+// Async init: tries to load from Supabase first
+async function initStoreAsync() {
+  const cloudData = await loadFromCloud();
+  if (cloudData) {
+    // Cloud data exists — use it as source of truth
+    const merged = { ...DEFAULT_DATA };
+    merged.settings = { ...DEFAULT_DATA.settings, ...cloudData.settings };
+    merged.website = cloudData.website || DEFAULT_DATA.website;
+    if (!merged.website.menuHero) merged.website.menuHero = DEFAULT_DATA.website.menuHero;
+    merged.categories = cloudData.categories || DEFAULT_DATA.categories;
+    merged.products = cloudData.products || DEFAULT_DATA.products;
+    merged.recipes = cloudData.recipes || [];
+    // Update local cache without re-syncing
+    localStorage.setItem(STORE_KEY, JSON.stringify(merged));
+    console.log('☁️ Loaded data from Supabase');
+    return merged;
+  }
+  // Fallback to local
+  return initStore();
+}
+
 const Store = {
   init: initStore,
+  initAsync: initStoreAsync,
 
   // Settings
   getSettings() { return getData()?.settings || DEFAULT_DATA.settings; },

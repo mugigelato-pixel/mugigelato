@@ -23,7 +23,7 @@
 
   // ── Initialize ──
   async function init() {
-    Store.init();
+    Store.init(); // local cache first for fast render
     if (typeof ImageStorage !== 'undefined') await ImageStorage.init();
     i18n.init();
     loadData();
@@ -33,6 +33,18 @@
     updateLanguageUI();
     bindEvents();
     setupRevealAnimations();
+
+    // Then sync from cloud and re-render if data changed
+    if (typeof SupabaseDB !== 'undefined') {
+      const cloudData = await Store.initAsync();
+      if (cloudData) {
+        loadData();
+        await loadMenuHero();
+        renderCategories();
+        renderProducts();
+        updateLanguageUI();
+      }
+    }
   }
 
   // ── Menu Hero Background ──
