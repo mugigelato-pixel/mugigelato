@@ -428,11 +428,12 @@
               <input type="color" id="qrBgColor" value="#0B0B14">
             </div>
           </div>
-          <button class="btn btn-primary mb-4" id="generateQrBtn">🔲 QR Kod Yenile</button>
-          <div class="qr-preview glass-card-strong" id="qrPreview">
-            <p class="text-muted">Yükleniyor...</p>
+          <div class="qr-preview-wrapper" style="display:flex; flex-direction:column; align-items:center; gap:var(--space-4); margin:var(--space-4) 0;">
+            <div class="qr-preview glass-card-strong" id="qrPreview" style="padding: 1.5rem; background: #0B0B14; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg);">
+              <p class="text-muted">Yükleniyor...</p>
+            </div>
           </div>
-          <button class="btn btn-secondary hidden" id="downloadQrBtn">📥 QR Kodu İndir</button>
+          <button class="btn btn-secondary" id="downloadQrBtn" style="width: 100%; max-width: 250px; margin: 0 auto; display: block;">📥 QR Kodu İndir</button>
         </div>
       </section>
 

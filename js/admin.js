@@ -1295,8 +1295,9 @@
     document.getElementById('importDataInput').addEventListener('change', importData);
     document.getElementById('resetDataBtn').addEventListener('click', resetData);
 
-    document.getElementById('generateQrBtn').addEventListener('click', generateQR);
     document.getElementById('downloadQrBtn').addEventListener('click', downloadQR);
+    document.getElementById('qrColor').addEventListener('change', generateQR);
+    document.getElementById('qrBgColor').addEventListener('change', generateQR);
 
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeFormModal(); confirmOverlay.classList.remove('active'); } });
   }
