@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>mugi — Yönetim Paneli</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Confirm Dialog -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-dialog">
+      <div class="confirm-icon">⚠️</div>
+      <h3 class="confirm-title" id="confirmTitle">Silme Onayı</h3>
+      <p class="confirm-text" id="confirmText">Bu öğeyi silmek istediğinize emin misiniz?</p>
+      <div class="confirm-actions">
+        <button class="btn btn-secondary" id="confirmCancel">İptal</button>
+        <button class="btn btn-danger" id="confirmYes">Evet, Sil</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== LOGIN SCREEN ========== -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card glass-card-strong animate-scale-in">
+      <img src="logo1.jpg" alt="mugi" class="login-logo">
+      <h1 class="login-title">mugi</h1>
+      <p class="login-subtitle">Yönetim Paneli</p>
+      <form class="login-form" id="loginForm">
+        <input type="password" id="loginPassword" placeholder="Şifrenizi girin" autocomplete="current-password">
+        <p class="login-error" id="loginError">Yanlış şifre!</p>
+        <button type="submit" class="btn btn-primary" style="width:100%">Giriş Yap</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== ADMIN LAYOUT ========== -->
+  <div class="admin-layout" id="adminLayout">
+
+    <!-- Sidebar Toggle (Mobile) -->
+    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-header">
+        <img src="logo1.jpg" alt="mugi" class="sidebar-logo">
+        <span class="sidebar-brand">mugi</span>
+        <span class="sidebar-badge">Admin</span>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-section="dashboard">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Panel</span>
+        </button>
+        <button class="nav-item" data-section="website">
+          <span class="nav-icon">🌐</span>
+          <span class="nav-label">Website</span>
+        </button>
+        <button class="nav-item" data-section="products">
+          <span class="nav-icon">📦</span>
+          <span class="nav-label">Menü Ürünleri</span>
+        </button>
+        <button class="nav-item" data-section="categories">
+          <span class="nav-icon">📁</span>
+          <span class="nav-label">Kategoriler</span>
+        </button>
+        <button class="nav-item" data-section="recipes">
+          <span class="nav-icon">🧪</span>
+          <span class="nav-label">Tarifler</span>
+        </button>
+        <button class="nav-item" data-section="settings">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Ayarlar</span>
+        </button>
+        <button class="nav-item" data-section="qr">
+          <span class="nav-icon">📱</span>
+          <span class="nav-label">QR Kod</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="nav-item" id="viewSiteBtn">
+          <span class="nav-icon">🌐</span>
+          <span class="nav-label">Siteyi Görüntüle</span>
+        </button>
+        <button class="nav-item" id="viewMenuBtn">
+          <span class="nav-icon">📱</span>
+          <span class="nav-label">QR Menüyü Gör</span>
+        </button>
+        <button class="nav-item nav-item-logout" id="logoutBtn">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-label">Çıkış</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+
+      <!-- ===== DASHBOARD ===== -->
+      <section class="admin-section active" id="section-dashboard">
+        <div class="admin-header">
+          <h1 class="admin-page-title">📊 Panel</h1>
+        </div>
+        <div class="stats-grid" id="statsGrid"></div>
+        <h3 style="margin-bottom:var(--space-4);font-family:var(--font-display);">Hızlı İşlemler</h3>
+        <div class="quick-actions">
+          <button class="btn btn-primary" id="quickAddProduct">➕ Yeni Ürün Ekle</button>
+          <button class="btn btn-secondary" id="quickAddCategory">📁 Yeni Kategori</button>
+          <button class="btn btn-secondary" onclick="window.open('index.html','_blank')">🌐 Siteyi Gör</button>
+          <button class="btn btn-secondary" onclick="window.open('menu.html','_blank')">📱 QR Menü</button>
+        </div>
+      </section>
+
+      <!-- ===== WEBSITE CONTENT ===== -->
+      <section class="admin-section" id="section-website">
+        <div class="admin-header">
+          <h1 class="admin-page-title">🌐 Website İçerik Yönetimi</h1>
+        </div>
+
+        <!-- Hero -->
+        <div class="settings-card glass-card-strong mb-6">
+          <h3 class="settings-card-title"><span class="icon">🏠</span> Ana Sayfa Başlık</h3>
+          <div class="form-group">
+            <label class="form-label">Hero Başlık</label>
+            <input type="text" id="wsHeroTitle">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="AdminApp.saveWebsiteHero()">💾 Kaydet</button>
+        </div>
+
+        <!-- Sections -->
+        <div class="settings-card glass-card-strong mb-6">
+          <h3 class="settings-card-title"><span class="icon">📝</span> Ana Sayfa Bölümleri</h3>
+          <div id="wsSections"></div>
+          <button class="btn btn-sm btn-secondary mt-4" onclick="AdminApp.addWebsiteSection()">➕ Yeni Bölüm Ekle</button>
+        </div>
+
+        <!-- Services -->
+        <div class="settings-card glass-card-strong mb-6">
+          <h3 class="settings-card-title"><span class="icon">🛎️</span> Hizmetler</h3>
+          <div id="wsServices"></div>
+          <button class="btn btn-sm btn-secondary mt-4" onclick="AdminApp.addWebsiteService()">➕ Yeni Hizmet Ekle</button>
+        </div>
+
+        <!-- Testimonials -->
+        <div class="settings-card glass-card-strong mb-6">
+          <h3 class="settings-card-title"><span class="icon">💬</span> Müşteri Yorumları</h3>
+          <div class="form-group">
+            <label class="form-label">Yorum Görseli</label>
+            <div class="inline-upload" data-field="testimonialImage" data-folder="website">
+              <div class="inline-upload-preview" id="prevTestimonialImage"></div>
+              <div class="inline-upload-actions">
+                <label class="btn btn-sm btn-secondary"><span>📸 Görsel Yükle</span><input type="file" accept="image/*" class="inline-upload-input" data-field="testimonialImage" data-folder="website" hidden></label>
+                <button class="btn btn-sm btn-danger" onclick="AdminApp.removeFieldImage('testimonialImage')" style="display:none" id="rmTestimonialImage">🗑️</button>
+              </div>
+            </div>
+          </div>
+          <div id="wsTestimonials"></div>
+          <button class="btn btn-sm btn-secondary mt-4" onclick="AdminApp.addTestimonial()">➕ Yeni Yorum Ekle</button>
+        </div>
+
+        <!-- Collaboration -->
+        <div class="settings-card glass-card-strong mb-6">
+          <h3 class="settings-card-title"><span class="icon">🤝</span> İş Birliği Bölümü</h3>
+          <div class="form-group">
+            <label class="form-label">Başlık</label>
+            <input type="text" id="wsCollabTitle">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Görsel</label>
+            <div class="inline-upload" data-field="collabImage" data-folder="website">
+              <div class="inline-upload-preview" id="prevCollabImage"></div>
+              <div class="inline-upload-actions">
+                <label class="btn btn-sm btn-secondary"><span>📸 Görsel Yükle</span><input type="file" accept="image/*" class="inline-upload-input" data-field="collabImage" data-folder="website" hidden></label>
+                <button class="btn btn-sm btn-danger" onclick="AdminApp.removeFieldImage('collabImage')" style="display:none" id="rmCollabImage">🗑️</button>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="AdminApp.saveCollaboration()">💾 Kaydet</button>
+        </div>
+
+        <!-- About -->
+        <div class="settings-card glass-card-strong mb-6">
+          <h3 class="settings-card-title"><span class="icon">ℹ️</span> Hakkımızda Sayfası</h3>
+          <div class="form-group">
+            <label class="form-label">Hakkımızda Metni</label>
+            <textarea id="wsAboutText" rows="4"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Görsel 1</label>
+              <div class="inline-upload" data-field="aboutImage1" data-folder="website/about">
+                <div class="inline-upload-preview" id="prevAboutImage1"></div>
+                <div class="inline-upload-actions">
+                  <label class="btn btn-sm btn-secondary"><span>📸 Yükle</span><input type="file" accept="image/*" class="inline-upload-input" data-field="aboutImage1" data-folder="website/about" hidden></label>
+                  <button class="btn btn-sm btn-danger" onclick="AdminApp.removeFieldImage('aboutImage1')" style="display:none" id="rmAboutImage1">🗑️</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Görsel 2</label>
+              <div class="inline-upload" data-field="aboutImage2" data-folder="website/about">
+                <div class="inline-upload-preview" id="prevAboutImage2"></div>
+                <div class="inline-upload-actions">
+                  <label class="btn btn-sm btn-secondary"><span>📸 Yükle</span><input type="file" accept="image/*" class="inline-upload-input" data-field="aboutImage2" data-folder="website/about" hidden></label>
+                  <button class="btn btn-sm btn-danger" onclick="AdminApp.removeFieldImage('aboutImage2')" style="display:none" id="rmAboutImage2">🗑️</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Şef Başlık</label>
+            <input type="text" id="wsChefTitle">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Şef Metin</label>
+            <textarea id="wsChefText" rows="4"></textarea>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="AdminApp.saveAbout()">💾 Kaydet</button>
+        </div>
+
+        <!-- Catering -->
+        <div class="settings-card glass-card-strong mb-6">
+          <h3 class="settings-card-title"><span class="icon">🎂</span> Catering Sayfası</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Başlık</label>
+              <input type="text" id="wsCateringTitle">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Alt Başlık</label>
+              <input type="text" id="wsCateringSubtitle">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Galeri Görselleri</label>
+            <div class="gallery-upload-grid" id="cateringGalleryGrid"></div>
+            <label class="btn btn-sm btn-secondary mt-2"><span>📸 Görsel Ekle</span><input type="file" accept="image/*" multiple class="gallery-upload-input" id="cateringGalleryInput" hidden></label>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="AdminApp.saveCatering()">💾 Kaydet</button>
+        </div>
+
+        <!-- Map -->
+        <div class="settings-card glass-card-strong mb-6">
+          <h3 class="settings-card-title"><span class="icon">🗺️</span> Harita</h3>
+          <div class="form-group">
+            <label class="form-label">Harita Görseli</label>
+            <div class="inline-upload" data-field="mapImage" data-folder="website">
+              <div class="inline-upload-preview" id="prevMapImage"></div>
+              <div class="inline-upload-actions">
+                <label class="btn btn-sm btn-secondary"><span>📸 Görsel Yükle</span><input type="file" accept="image/*" class="inline-upload-input" data-field="mapImage" data-folder="website" hidden></label>
+                <button class="btn btn-sm btn-danger" onclick="AdminApp.removeFieldImage('mapImage')" style="display:none" id="rmMapImage">🗑️</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Google Maps Embed URL</label>
+            <input type="text" id="wsMapEmbed">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="AdminApp.saveMap()">💾 Kaydet</button>
+        </div>
+      </section>
+
+      <!-- ===== PRODUCTS ===== -->
+      <section class="admin-section" id="section-products">
+
+        <!-- Menu Hero Background Control -->
+        <div class="settings-card glass-card-strong mb-6">
+          <h3 class="settings-card-title"><span class="icon">🎨</span> Menü Arka Plan</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Arka Plan Tipi</label>
+              <select id="menuHeroBgType">
+                <option value="gradient">🌈 Varsayılan Gradyan</option>
+                <option value="image">🖼️ Resim</option>
+                <option value="video">🎬 Video</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Karartma Oranı</label>
+              <div style="display:flex;align-items:center;gap:var(--space-3)">
+                <input type="range" id="menuHeroOverlay" min="0" max="100" value="60" style="flex:1">
+                <span id="menuHeroOverlayVal" style="font-size:var(--text-sm);color:var(--text-secondary);min-width:36px">60%</span>
+              </div>
+            </div>
+          </div>
+          <div id="menuHeroMediaUpload">
+            <div class="form-group" id="menuHeroImageGroup">
+              <label class="form-label">Arka Plan Görseli</label>
+              <div class="inline-upload">
+                <div class="inline-upload-preview" id="prevMenuHeroBg"></div>
+                <div class="inline-upload-actions">
+                  <label class="btn btn-sm btn-secondary"><span>📸 Görsel Yükle</span><input type="file" accept="image/*" id="menuHeroBgInput" hidden></label>
+                  <button class="btn btn-sm btn-danger" id="rmMenuHeroBg" style="display:none" onclick="AdminApp.removeMenuHeroBg()">🗑️</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" id="menuHeroVideoGroup" style="display:none">
+              <label class="form-label">Arka Plan Videosu</label>
+              <div class="inline-upload">
+                <div class="inline-upload-preview" id="prevMenuHeroVideo"></div>
+                <div class="inline-upload-actions">
+                  <label class="btn btn-sm btn-secondary"><span>🎬 Video Yükle</span><input type="file" accept="video/mp4,video/webm" id="menuHeroVideoInput" hidden></label>
+                  <button class="btn btn-sm btn-danger" id="rmMenuHeroVideo" style="display:none" onclick="AdminApp.removeMenuHeroVideo()">🗑️</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="AdminApp.saveMenuHero()">💾 Kaydet</button>
+        </div>
+
+        <div class="product-list-header">
+          <h1 class="admin-page-title">📦 Ürünler</h1>
+          <button class="btn btn-primary" id="addProductBtn">➕ Yeni Ürün</button>
+        </div>
+        <div class="admin-product-grid" id="adminProductGrid"></div>
+      </section>
+
+      <!-- ===== CATEGORIES ===== -->
+      <section class="admin-section" id="section-categories">
+        <div class="product-list-header">
+          <h1 class="admin-page-title">📁 Kategoriler</h1>
+          <button class="btn btn-primary" id="addCategoryBtn">➕ Yeni Kategori</button>
+        </div>
+        <div class="category-list" id="categoryList"></div>
+      </section>
+
+      <!-- ===== RECIPES ===== -->
+      <section class="admin-section" id="section-recipes">
+        <div class="admin-header">
+          <h1 class="admin-page-title">🧪 Tarifler</h1>
+        </div>
+        <div class="recipe-selector">
+          <label class="form-label">Ürün Seçin</label>
+          <select id="recipeProductSelect">
+            <option value="">— Ürün seçin —</option>
+          </select>
+        </div>
+        <div id="recipeContent"></div>
+      </section>
+
+      <!-- ===== SETTINGS ===== -->
+      <section class="admin-section" id="section-settings">
+        <div class="admin-header">
+          <h1 class="admin-page-title">⚙️ Ayarlar</h1>
+        </div>
+        <div class="settings-grid">
+          <div class="settings-card glass-card-strong">
+            <h3 class="settings-card-title"><span class="icon">🏪</span> Dükkan Bilgileri</h3>
+            <div class="form-group">
+              <label class="form-label">Dükkan Adı</label>
+              <input type="text" id="settingShopName">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Adres</label>
+              <textarea id="settingAddress" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Telefon</label>
+              <input type="text" id="settingPhone">
+            </div>
+            <div class="form-group">
+              <label class="form-label">E-posta</label>
+              <input type="email" id="settingEmail">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Çalışma Saatleri</label>
+              <input type="text" id="settingHours">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Instagram URL</label>
+              <input type="url" id="settingInstagram">
+            </div>
+            <button class="btn btn-primary" id="saveSettingsBtn">💾 Ayarları Kaydet</button>
+          </div>
+
+          <div class="settings-card glass-card-strong">
+            <h3 class="settings-card-title"><span class="icon">🔐</span> Güvenlik & Veri</h3>
+            <div class="form-group">
+              <label class="form-label">Mevcut Şifre</label>
+              <input type="password" id="currentPassword">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Yeni Şifre</label>
+              <input type="password" id="newPassword">
+            </div>
+            <button class="btn btn-secondary mb-4" id="changePasswordBtn">🔑 Şifre Değiştir</button>
+
+            <div class="divider"></div>
+
+            <div class="form-group">
+              <button class="btn btn-secondary" id="exportDataBtn" style="width:100%;margin-bottom:var(--space-3)">📥 Veriyi Dışa Aktar (JSON)</button>
+              <label class="btn btn-secondary" style="width:100%;margin-bottom:var(--space-3);cursor:pointer;display:flex">
+                📤 Veriyi İçe Aktar
+                <input type="file" accept=".json" id="importDataInput" style="display:none">
+              </label>
+              <button class="btn btn-danger" id="resetDataBtn" style="width:100%">🗑️ Verileri Sıfırla</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== QR CODE ===== -->
+      <section class="admin-section" id="section-qr">
+        <div class="admin-header">
+          <h1 class="admin-page-title">📱 QR Kod</h1>
+        </div>
+        <div class="qr-container">
+          <div class="form-group">
+            <label class="form-label">Menü URL</label>
+            <input type="url" id="qrUrl" placeholder="https://mugigelato.com">
+          </div>
+          <div class="qr-options">
+            <div class="color-input-group">
+              <label>QR Rengi</label>
+              <input type="color" id="qrColor" value="#A8D5BA">
+            </div>
+            <div class="color-input-group">
+              <label>Arka Plan</label>
+              <input type="color" id="qrBgColor" value="#0B0B14">
+            </div>
+          </div>
+          <button class="btn btn-primary mb-4" id="generateQrBtn">🔲 QR Kod Oluştur</button>
+          <div class="qr-preview glass-card-strong" id="qrPreview">
+            <p class="text-muted">URL girin ve QR oluşturun</p>
+          </div>
+          <button class="btn btn-secondary hidden" id="downloadQrBtn">📥 QR Kodu İndir</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Form Modal (Product / Category) -->
+  <div class="form-modal-overlay" id="formModal">
+    <div class="form-modal">
+      <div class="form-modal-title">
+        <span id="formModalTitle">Yeni Ürün</span>
+        <button class="btn btn-icon btn-secondary" id="formModalClose">✕</button>
+      </div>
+      <div id="formModalContent"></div>
+    </div>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
