@@ -413,27 +413,12 @@
         <div class="admin-header">
           <h1 class="admin-page-title">📱 QR Kod</h1>
         </div>
-        <div class="qr-container">
-          <div class="form-group">
-            <label class="form-label">Menü Adresi</label>
-            <div class="qr-url-display glass-card" id="qrUrlDisplay" style="padding:var(--space-3);font-size:var(--text-sm);word-break:break-all;color:var(--accent-green)"></div>
-          </div>
-          <div class="qr-options">
-            <div class="color-input-group">
-              <label>QR Rengi</label>
-              <input type="color" id="qrColor" value="#0B0B14">
-            </div>
-            <div class="color-input-group">
-              <label>Arka Plan</label>
-              <input type="color" id="qrBgColor" value="#FFFFFF">
-            </div>
-          </div>
           <div class="qr-preview-wrapper" style="display:flex; flex-direction:column; align-items:center; gap:var(--space-4); margin:var(--space-4) 0;">
-            <div class="qr-preview glass-card-strong" id="qrPreview" style="padding: 1.5rem; background: #FFFFFF; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg);">
-              <p class="text-muted">Yükleniyor...</p>
+            <div class="qr-preview glass-card-strong" style="padding: 1.5rem; background: #FFFFFF; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg);">
+              <img id="staticQrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://mugigelato.vercel.app/menu.html" alt="Mugi Gelato QR Menu" style="width: 250px; height: 250px; display: block; border-radius: 4px;" />
             </div>
           </div>
-          <button class="btn btn-secondary" id="downloadQrBtn" style="width: 100%; max-width: 250px; margin: 0 auto; display: block;">📥 QR Kodu İndir</button>
+          <a href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=https://mugigelato.vercel.app/menu.html" download="mugi-gelato-qr.png" target="_blank" class="btn btn-secondary" style="width: 100%; max-width: 250px; margin: 0 auto; display: flex; align-items: center; justify-content: center; text-decoration: none;">📥 QR Kodu İndir</a>
         </div>
       </section>
 

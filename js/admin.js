@@ -1223,41 +1223,7 @@
     });
   }
 
-  // ══════════════════════════════════════
-  //  QR CODE
-  // ══════════════════════════════════════
-  function getMenuUrl() {
-    const loc = window.location;
-    return `${loc.protocol}//${loc.host}/menu.html`;
-  }
 
-  function generateQR() {
-    const url = getMenuUrl();
-    const urlDisplay = document.getElementById('qrUrlDisplay');
-    if (urlDisplay) urlDisplay.textContent = url;
-
-    const color = document.getElementById('qrColor').value;
-    const bgColor = document.getElementById('qrBgColor').value;
-    const preview = document.getElementById('qrPreview');
-    if (preview) preview.style.background = bgColor;
-    preview.innerHTML = '';
-    const canvas = document.createElement('canvas');
-    preview.appendChild(canvas);
-    if (typeof QRCode !== 'undefined') {
-      QRCode.toCanvas(canvas, url, { width: 350, margin: 4, color: { dark: color, light: bgColor }, errorCorrectionLevel: 'H' }, (err) => {
-        if (err) {
-          console.error(err);
-          showToast('QR hatası!', 'error');
-        }
-      });
-    }
-  }
-
-  function downloadQR() {
-    const canvas = document.querySelector('#qrPreview canvas');
-    if (!canvas) return;
-    const a = document.createElement('a'); a.href = canvas.toDataURL('image/png'); a.download = 'mugi-gelato-qr.png'; a.click();
-  }
 
   // ══════════════════════════════════════
   //  GLOBAL EVENTS
@@ -1267,10 +1233,7 @@
     logoutBtn.addEventListener('click', handleLogout);
 
     document.querySelectorAll('.nav-item[data-section]').forEach(item => {
-      item.addEventListener('click', () => {
-        switchSection(item.dataset.section);
-        if (item.dataset.section === 'qr') generateQR();
-      });
+      item.addEventListener('click', () => switchSection(item.dataset.section));
     });
 
     sidebarToggle.addEventListener('click', () => { adminSidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); });
@@ -1297,10 +1260,6 @@
     document.getElementById('exportDataBtn').addEventListener('click', exportData);
     document.getElementById('importDataInput').addEventListener('change', importData);
     document.getElementById('resetDataBtn').addEventListener('click', resetData);
-
-    document.getElementById('downloadQrBtn').addEventListener('click', downloadQR);
-    document.getElementById('qrColor').addEventListener('change', generateQR);
-    document.getElementById('qrBgColor').addEventListener('change', generateQR);
 
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeFormModal(); confirmOverlay.classList.remove('active'); } });
   }
